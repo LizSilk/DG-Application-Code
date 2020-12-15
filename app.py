@@ -1,19 +1,30 @@
+"""
+This script creates a Flask server to look up ICP numbers & inverters
+The ICP numbers come from the Electricity Authority's api
+The inverter data comes from the Clean Energy Council's list of improved inverters
+"""
 from flask import Flask, request, render_template, Response
 import requests
 import openpyxl
-import os
 import tempfile
+
 
 app = Flask(__name__)
 
 
 @app.route('/inverter', methods=['GET', 'POST'])
 def lookup_inverter():
+    """
+    This function eceives a get or post request with an inverter model number
+    It downloads the most recent list of approved inverters & checks if the inverter is in that list
+
+    :return: Sends a reply to the request
+    """
     print(request.values)
     file_request = requests.get(
         "http://www.cleanenergyregulator.gov.au/DocumentAssets/Documents/CEC%20approved%20inverters.xlsx")
 
-    output =tempfile.TemporaryFile()
+    output = tempfile.TemporaryFile()
     output.write(file_request.content)
 
     inverters = openpyxl.load_workbook(output)
@@ -23,13 +34,22 @@ def lookup_inverter():
             cell_name = "{}{}".format(column, row)
             if sheet[cell_name].value == request.form['ModelNum']:
                 output.close()
+                #1 used to mean true
                 return ('1')
     output.close()
+    #0 used to mean false
     return "0"
 
 
 @app.route('/icp', methods=['GET', 'POST'])
 def lookup_icp():
+    """
+    This function recieved a get or post request with a ICP number
+    it sends a request to the Electricity Authorities's ICP api\
+    it then cuts the address data out from the reply and sends it as a response to the original request
+
+    :return: address data formatted as JSON
+    """
     print(request.values)
     icp_request = requests.get("https://emi.azure-api.net/ICPConnectionData/v2/single/?ICP=" + request.form['ICPNum'],
                                headers={'Ocp-Apim-Subscription-Key': 'b995a640a14b469cae8755d23c33256e'})
@@ -39,8 +59,13 @@ def lookup_icp():
     else:
         return Response("Bad ICP", status=400)
 
+
 @app.route('/test')
 def test_env():
+    """
+    used to provide a webpage to test on
+    :return:
+    """
     return render_template("test-page.html")
 
 
