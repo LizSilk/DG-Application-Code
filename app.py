@@ -2,6 +2,7 @@ from flask import Flask, request, render_template, Response
 import requests
 import openpyxl
 import os
+import tempfile
 
 app = Flask(__name__)
 
@@ -12,19 +13,18 @@ def lookup_inverter():
     file_request = requests.get(
         "http://www.cleanenergyregulator.gov.au/DocumentAssets/Documents/CEC%20approved%20inverters.xlsx")
 
-    output = open('CEC approved inverters.xlsx', 'wb')
+    output =tempfile.TemporaryFile()
     output.write(file_request.content)
-    output.close()
 
-    inverters = openpyxl.load_workbook('CEC approved inverters.xlsx')
+    inverters = openpyxl.load_workbook(output)
     sheet = inverters['CEC approved inverters']
     for row in range(1, sheet.max_row + 1):
         for column in 'C':
             cell_name = "{}{}".format(column, row)
             if sheet[cell_name].value == request.form['ModelNum']:
-                os.remove("CEC approved inverters.xlsx")
+                output.close()
                 return ('1')
-    os.remove("CEC approved inverters.xlsx")
+    output.close()
     return "0"
 
 
