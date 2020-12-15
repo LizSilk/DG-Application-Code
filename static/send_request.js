@@ -1,34 +1,36 @@
+/**
+ * This script looks up the inverter to confirm it is approved
+ * It sends a http request to the python server, and updates the HTML to give the user an answer
+ * This script must be run before icp_request.js as it declares the iframe element
+ */
 
-//test
-var iframe = document.getElementById("203407869834061");
+const iframe = document.getElementById("203407869834061");
 
 iframe.addEventListener("load", function() {
+    makeButton(1,"text_279","input_69","input_298")
+    makeButton(2,"text_281","input_150","input_305")
+    makeButton(3,"text_285","input_160","input_306")
+    makeButton(3,"text_290","input_220","input_307")
 
-    var buttonDiv1 = iframe.contentWindow.document.getElementById("text_279");
-    buttonDiv1.innerHTML = "<button id=\"lookup-button-1\" type=\"button\">\n"
-        + "Check Inverter Model\n" + "</button>"
-        + "<div id=\"lookup-output-1\" data-component = \"text\">" +"</div>";
-    var button1 = iframe.contentWindow.document.getElementById("lookup-button-1");
-    button1.addEventListener("click",function(){lookup("input_69","lookup-output-1","input_298")});
-    iframe.contentWindow.document.getElementById('input_298').value=0;
-    iframe.contentWindow.document.getElementById('input_298').dispatchEvent(new Event('change'));
-
-    var button2 = iframe.contentWindow.document.getElementById("form-pagebreak-next_282");
-    button2.addEventListener("click",function(){lookup("input_150","text_281")});
-
-    var button3 = iframe.contentWindow.document.getElementById("form-pagebreak-next_283");
-    button3.addEventListener("click",function(){lookup("input_160","text_285")});
-
-    var button4 = iframe.contentWindow.document.getElementById("form-pagebreak-next_284");
-    button4.addEventListener("click",function(){lookup("input_220","text_286")});
 });
 
+function makeButton(num, textID, inputID,backendID){
+    const buttonDiv = iframe.contentWindow.document.getElementById(textID);
+    buttonDiv.innerHTML = "<button id=\"lookup-button-"+num+"\" type=\"button\">\n"
+        + "Check Inverter Model\n" + "</button>"
+        + "<div id=\"lookup-output-"+num+"\" data-component = \"text\">" +"</div>";
+    let button1 = iframe.contentWindow.document.getElementById("lookup-button-"+num);
+    button1.addEventListener("click",function(){lookup(inputID,"lookup-output-"+num,backendID)});
+    iframe.contentWindow.document.getElementById(backendID).value=0;
+    iframe.contentWindow.document.getElementById(backendID).dispatchEvent(new Event('change'));
+}
+
 function lookup(inputID,outputID,backendID){
-    var elmnt = iframe.contentWindow.document.getElementById(inputID).value;
-    var form = new FormData();
+    let elmnt = iframe.contentWindow.document.getElementById(inputID).value;
+    let form = new FormData();
     form.append('ModelNum',elmnt.trim())
     Http = new XMLHttpRequest();
-    url = 'http://127.0.0.1:5000';
+    url = 'http://127.0.0.1:5000/inverter';
     Http.open("POST", url, true);
     Http.send(form);
     Http.onreadystatechange = (e) => {
