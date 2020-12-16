@@ -62,6 +62,8 @@ IFRAME.addEventListener("load", function() {
            else{
                IFRAME.contentWindow.document.getElementById("lookup-output-icp").innerHTML = "<p>" +
                    "The ICP number you have entered is invalid. Please check you have entered it correctly." +"</p>"
+                IFRAME.contentWindow.document.getElementById('input_304').value=0;
+                IFRAME.contentWindow.document.getElementById('input_304').dispatchEvent(new Event('change'));
             }
         }
     });
