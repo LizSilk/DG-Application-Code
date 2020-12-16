@@ -1,0 +1,15 @@
+comment the code -done
+add libraries to repository
+work out how to package & run this w/o pycharm
+test if ICP lookup fails safe - done
+write some unit tests? - done
+add logging to the server so we can see how much use it gets - seems this is done automatically
+
+
+other notes;
+
+The javascript currently assumes the url of the server is the same as the url of the website - this will need to be
+changed when this is put in production
+
+send_request.js has run before as it declares the iframe variable icp_request.js
+set the height of the iframe container to avoid the cutting off issue
