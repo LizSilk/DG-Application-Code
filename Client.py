@@ -1,9 +1,11 @@
 import requests
 import json
+
 url = "https://emi.azure-api.net/ICPConnectionData/v2/single/?ICP=0001451610PCDF9"
-r = requests.get(url, headers={'Ocp-Apim-Subscription-Key': 'b995a640a14b469cae8755d23c33256e'})
-# r = requests.post('http://127.0.0.1:5000/', data={'ModelNum':'PVS-100-TL'})
-print()
+# r = requests.get(url, headers={'Ocp-Apim-Subscription-Key': 'b995a640a14b469cae8755d23c33256e'})
+# r = requests.post('http://127.0.0.1:5000/inverter', data={'ModelNum':'PVS-100-TL'})
+r = requests.post('http://127.0.0.1:5000/icp', data={'ICPNum': '18984CP2DD'})
+print(r.text)
 request_json = r.json()
 print(json.dumps(request_json, indent=4, sort_keys=True))
 addr_num = request_json[0]["Address"]["PhysicalAddressNumber"]

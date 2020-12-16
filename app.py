@@ -38,14 +38,14 @@ def lookup_inverter():
                 return ('1')
     output.close()
     #0 used to mean false
-    return "0"
+    return Response("0", status=400)
 
 
 @app.route('/icp', methods=['GET', 'POST'])
 def lookup_icp():
     """
     This function recieved a get or post request with a ICP number
-    it sends a request to the Electricity Authorities's ICP api\
+    it sends a request to the Electricity Authorities ICP api
     it then cuts the address data out from the reply and sends it as a response to the original request
 
     :return: address data formatted as JSON
@@ -55,6 +55,7 @@ def lookup_icp():
                                headers={'Ocp-Apim-Subscription-Key': 'b995a640a14b469cae8755d23c33256e'})
     print(icp_request.status_code)
     if icp_request.status_code == 200:
+        print(icp_request.json()[0]["Address"])
         return icp_request.json()[0]["Address"]
     else:
         return Response("Bad ICP", status=400)
