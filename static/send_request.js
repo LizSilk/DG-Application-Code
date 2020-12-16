@@ -50,7 +50,7 @@ function lookup(inputID,outputID,backendID){
     let form = new FormData();
     form.append('ModelNum',elmnt.trim())
     Http = new XMLHttpRequest();
-    url = 'http://127.0.0.1:5000/inverter';
+    url = window.location.origin + "/inverter"
     Http.open("POST", url, true);
     Http.send(form);
     //wait for response

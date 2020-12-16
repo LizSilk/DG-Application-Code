@@ -32,7 +32,7 @@ IFRAME.addEventListener("load", function() {
         let form = new FormData();
         form.append('ICPNum',icp_input.value.trim())
         Http = new XMLHttpRequest();
-        url = 'http://127.0.0.1:5000/icp';
+        url = window.location.origin +"/icp"
         Http.open("POST", url, true);
         Http.send(form);
         //wait for response
