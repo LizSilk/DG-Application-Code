@@ -56,7 +56,14 @@ function lookup(inputID,outputID,backendID){
     //wait for response
     Http.onreadystatechange = (e) => {
         //if the model was not on the list of improved inverters
-        if(Http.responseText=="0"){
+        if(Http.status== 0 || Http.status ==408 ){
+            IFRAME.contentWindow.document.getElementById(backendID).value=1;
+            IFRAME.contentWindow.document.getElementById(backendID).dispatchEvent(new Event('change'));
+            IFRAME.contentWindow.document.getElementById(outputID).innerHTML = "<p>" +
+                "We could not connect to our servers. Please ensure that the inverter is on the CEC approved list, which can be found "
+                +"<a href=\"http://www.cleanenergyregulator.gov.au/DocumentAssets/Pages/CEC-approved-inverters.aspx\" target=\"_blank\">here.</a>"+"</p>";
+        }
+        else if(Http.responseText=="0"){
             IFRAME.contentWindow.document.getElementById(backendID).value=0;
             IFRAME.contentWindow.document.getElementById(backendID).dispatchEvent(new Event('change'));
             IFRAME.contentWindow.document.getElementById(outputID).innerHTML = "<p>" +

@@ -39,7 +39,7 @@ IFRAME.addEventListener("load", function() {
         Http.onreadystatechange = (e) => {
             console.log(Http.responseText)
             //if the icp was valid
-            if(Http.status !== 400){
+            if(Http.status != 400 && Http.status!= 0 ){
                 IFRAME.contentWindow.document.getElementById("lookup-output-icp").innerHTML = "<p>" +
                    "The ICP number you have entered is valid!" +"</p>"
                 let json = JSON.parse(Http.responseText)
@@ -49,6 +49,13 @@ IFRAME.addEventListener("load", function() {
                 IFRAME.contentWindow.document.getElementById("input_39_state").value=json.PhysicalAddressRegion
                 IFRAME.contentWindow.document.getElementById("input_39_postal").value=json.PhysicalAddressPostCode
                 IFRAME.contentWindow.document.getElementById('input_304').value=1;
+                IFRAME.contentWindow.document.getElementById('input_304').dispatchEvent(new Event('change'));
+           }
+           else if(Http.status==0){
+               IFRAME.contentWindow.document.getElementById("lookup-output-icp").innerHTML = "<p>" +
+                   "We couldn't connect to our server. Please make sure the ICP number is correct before proceeding"
+                   +"</p>"
+               IFRAME.contentWindow.document.getElementById('input_304').value=1;
                 IFRAME.contentWindow.document.getElementById('input_304').dispatchEvent(new Event('change'));
            }
            //if the ICP was invalid
