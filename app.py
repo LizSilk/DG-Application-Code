@@ -3,7 +3,7 @@ This script creates a Flask server to look up ICP numbers & inverters
 The ICP numbers come from the Electricity Authority's api
 The inverter data comes from the Clean Energy Council's list of improved inverters
 """
-from flask import Flask, request, render_template, Response
+from flask import Flask, request, render_template, Response, redirect, url_for
 import requests
 import openpyxl
 import tempfile
@@ -68,6 +68,10 @@ def test_env():
     :return:
     """
     return render_template("test-page.html")
+
+@app.route('/')
+def index():
+    return redirect(url_for('test_env'))
 
 
 if __name__ == '__main__':
