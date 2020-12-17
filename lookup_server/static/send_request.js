@@ -1,7 +1,7 @@
 /**
  * This script looks up the inverter to confirm it is approved
  * It sends a http request to the python server, and updates the HTML to give the user an answer
- * This script must be run AFTER icp_request.js as it declares the IFRAME element
+ * This script must be run before icp_request.js as it declares the IFRAME element
  */
 
 //the iframe container
