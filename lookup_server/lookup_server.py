@@ -3,7 +3,7 @@ This script creates a Flask server to look up ICP numbers & inverters
 The ICP numbers come from the Electricity Authority's api
 The inverter data comes from the Clean Energy Council's list of improved inverters
 """
-from flask import Flask, request, render_template, Response, redirect, url_for
+from flask import Flask, request, render_template, Response, redirect, url_for, make_response
 import requests
 import openpyxl
 import tempfile
@@ -11,7 +11,7 @@ import tempfile
 app = Flask(__name__)
 
 
-@app.route('/inverter', methods=['GET', 'POST'])
+@app.route('/inverter', methods=['GET', 'POST', 'OPTIONS'])
 def lookup_inverter():
     """
     This function receives a get or post request with an inverter model number
@@ -19,6 +19,8 @@ def lookup_inverter():
 
     :return: Sends a reply to the request
     """
+    if request.method == 'OPTIONS':
+        return build_preflight_response()
     print(request.values)
     file_request = requests.get(
         "http://www.cleanenergyregulator.gov.au/DocumentAssets/Documents/CEC%20approved%20inverters.xlsx")
@@ -33,14 +35,18 @@ def lookup_inverter():
             cell_name = "{}{}".format(column, row)
             if sheet[cell_name].value == request.form['ModelNum']:
                 output.close()
-                #1 used to mean true
-                return ('1')
+                # 1 used to mean true
+                response = make_response("1", 200)
+                response.headers.add("Access-Control-Allow-Origin", "*")
+                return response
     output.close()
-    #0 used to mean false
-    return Response("0", status=400)
+    # 0 used to mean false
+    response = make_response("0", 400)
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response
 
 
-@app.route('/icp', methods=['GET', 'POST'])
+@app.route('/icp', methods=['GET', 'POST', 'OPTIONS'])
 def lookup_icp():
     """
     This function receives a get or post request with a ICP number
@@ -49,15 +55,23 @@ def lookup_icp():
 
     :return: address data formatted as JSON
     """
+
+    if request.method == 'OPTIONS':
+        return build_preflight_response()
+
     print(request.values)
     icp_request = requests.get("https://emi.azure-api.net/ICPConnectionData/v2/single/?ICP=" + request.form['ICPNum'],
                                headers={'Ocp-Apim-Subscription-Key': 'b995a640a14b469cae8755d23c33256e'})
     print(icp_request.status_code)
     if icp_request.status_code == 200:
         print(icp_request.json()[0]["Address"])
-        return icp_request.json()[0]["Address"]
+        response = make_response(icp_request.json()[0]["Address"], 200)
+        response.headers.add("Access-Control-Allow-Origin", "*")
+        return response
     else:
-        return Response("Bad ICP", status=400)
+        response = make_response("Bad ICP", 400)
+        response.headers.add("Access-Control-Allow-Origin", "*")
+        return response
 
 
 @app.route('/test')
@@ -68,6 +82,7 @@ def test_env():
     """
     return render_template("test-page.html")
 
+
 @app.route('/')
 def index():
     return redirect(url_for('test_env'))
@@ -75,3 +90,11 @@ def index():
 
 if __name__ == '__main__':
     app.run()
+
+
+def build_preflight_response():
+    response = make_response("", 400)
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add('Access-Control-Allow-Headers', "*")
+    response.headers.add('Access-Control-Allow-Methods', "*")
+    return response
