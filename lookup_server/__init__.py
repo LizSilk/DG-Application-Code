@@ -1,1 +1,0 @@
-from lookup_server import main

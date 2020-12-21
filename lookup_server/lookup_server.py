@@ -8,7 +8,6 @@ import requests
 import openpyxl
 import tempfile
 
-
 app = Flask(__name__)
 
 
@@ -44,7 +43,7 @@ def lookup_inverter():
 @app.route('/icp', methods=['GET', 'POST'])
 def lookup_icp():
     """
-    This function recieved a get or post request with a ICP number
+    This function receives a get or post request with a ICP number
     it sends a request to the Electricity Authorities ICP api
     it then cuts the address data out from the reply and sends it as a response to the original request
 
