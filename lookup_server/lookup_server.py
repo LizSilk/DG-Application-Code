@@ -14,7 +14,7 @@ app = Flask(__name__)
 @app.route('/inverter', methods=['GET', 'POST'])
 def lookup_inverter():
     """
-    This function eceives a get or post request with an inverter model number
+    This function receives a get or post request with an inverter model number
     It downloads the most recent list of approved inverters & checks if the inverter is in that list
 
     :return: Sends a reply to the request
