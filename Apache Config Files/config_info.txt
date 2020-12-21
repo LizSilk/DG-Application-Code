@@ -1,0 +1,7 @@
+The lookup_server.conf file needs to be added to /Apache24/conf.
+It then needs to be included in /conf/httpd.conf by adding:
+
+# Include Flask file
+Include conf/lookup_server.conf
+
+WSGI needs to be configured by copying the output from mod-wsgi-express module-config into conf/httpd.conf
