@@ -57,7 +57,7 @@ function lookup(inputID,outputID,backendID){
     Http.onreadystatechange = (e) => {
         //if the model was not on the list of improved inverters
         if(Http.status== 0 || Http.status ==408 ){
-            IFRAME.contentWindow.document.getElementById(backendID).value=1;
+            IFRAME.contentWindow.document.getElementById(backendID).value=2;
             IFRAME.contentWindow.document.getElementById(backendID).dispatchEvent(new Event('change'));
             IFRAME.contentWindow.document.getElementById(outputID).innerHTML = "<p>" +
                 "We could not connect to our servers. Please ensure that the inverter is on the CEC approved list, which can be found "
@@ -72,7 +72,7 @@ function lookup(inputID,outputID,backendID){
         }
         //if the model was on the list of improved inverters
         else{
-            IFRAME.contentWindow.document.getElementById(backendID).value=1;
+            IFRAME.contentWindow.document.getElementById(backendID).value=2;
             IFRAME.contentWindow.document.getElementById(backendID).dispatchEvent(new Event('change'));
             IFRAME.contentWindow.document.getElementById(outputID).innerHTML = "<p>" +
                 "The inverter model you have entered is on the Clean Energy Council's list of improved inverters. This list can be found "

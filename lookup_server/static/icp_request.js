@@ -48,14 +48,14 @@ IFRAME.addEventListener("load", function() {
                 IFRAME.contentWindow.document.getElementById("input_39_city").value=json.PhysicalAddressTown
                 IFRAME.contentWindow.document.getElementById("input_39_state").value=json.PhysicalAddressRegion
                 IFRAME.contentWindow.document.getElementById("input_39_postal").value=json.PhysicalAddressPostCode
-                IFRAME.contentWindow.document.getElementById('input_304').value=1;
+                IFRAME.contentWindow.document.getElementById('input_304').value=2;
                 IFRAME.contentWindow.document.getElementById('input_304').dispatchEvent(new Event('change'));
            }
            else if(Http.status==0){
                IFRAME.contentWindow.document.getElementById("lookup-output-icp").innerHTML = "<p>" +
                    "We couldn't connect to our server. Please make sure the ICP number is correct before proceeding"
                    +"</p>"
-               IFRAME.contentWindow.document.getElementById('input_304').value=1;
+               IFRAME.contentWindow.document.getElementById('input_304').value=2;
                 IFRAME.contentWindow.document.getElementById('input_304').dispatchEvent(new Event('change'));
            }
            //if the ICP was invalid
