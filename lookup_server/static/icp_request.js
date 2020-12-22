@@ -55,7 +55,7 @@ IFRAME.addEventListener("load", function() {
                IFRAME.contentWindow.document.getElementById("lookup-output-icp").innerHTML = "<p>" +
                    "We couldn't connect to our server. Please make sure the ICP number is correct before proceeding"
                    +"</p>"
-               IFRAME.contentWindow.document.getElementById('input_304').value=2;
+               IFRAME.contentWindow.document.getElementById('input_304').value=-2;
                 IFRAME.contentWindow.document.getElementById('input_304').dispatchEvent(new Event('change'));
            }
            //if the ICP was invalid
