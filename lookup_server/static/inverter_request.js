@@ -20,7 +20,6 @@ IFRAME.addEventListener("load", function() {
 
 /**
  * This function is used to create the 'Check Inverter Button' buttons in the HTML
- * I made it a function as I did not want to have to repeat the code four times
  * @param num the number of the inverter i.e. is it the first/second/third inverter on the form
  * @param textID the id of the paragraph element that will be overwritten with the button
  * @param inputID the ID of the input field for the inverter model
@@ -33,8 +32,7 @@ function makeButton(num, textID, inputID,backendID){
         + "<div id=\"lookup-output-"+num+"\" data-component = \"text\">" +"</div>";
     let button1 = IFRAME.contentWindow.document.getElementById("lookup-button-"+num);
     button1.addEventListener("click",function(){lookup(inputID,"lookup-output-"+num,backendID)});
-    IFRAME.contentWindow.document.getElementById(backendID).value=0;
-    IFRAME.contentWindow.document.getElementById(backendID).dispatchEvent(new Event('change'));
+    update_backend(backendID,0)
 }
 
 /**
@@ -57,26 +55,35 @@ function lookup(inputID,outputID,backendID){
     Http.onreadystatechange = (e) => {
         //if the model was not on the list of improved inverters
         if(Http.status== 0 || Http.status ==408 ){
-            IFRAME.contentWindow.document.getElementById(backendID).value=2;
-            IFRAME.contentWindow.document.getElementById(backendID).dispatchEvent(new Event('change'));
+            update_backend(backendID,2)
             IFRAME.contentWindow.document.getElementById(outputID).innerHTML = "<p>" +
-                "We could not connect to our servers. Please ensure that the inverter complies with AS/NZS 4777.1 & 2. A list of such inverters can be found "
+                "We could not connect to our servers. Please ensure that the inverter complies with AS/NZS 4777.2. A list of such inverters can be found "
                 +"<a href=\"http://www.cleanenergyregulator.gov.au/DocumentAssets/Pages/CEC-approved-inverters.aspx\" target=\"_blank\">here.</a>"+"</p>";
         }
+        //if there was no response/couldn't connect
         else if(Http.responseText=="0"){
-            IFRAME.contentWindow.document.getElementById(backendID).value=-1;
-            IFRAME.contentWindow.document.getElementById(backendID).dispatchEvent(new Event('change'));
+            update_backend(backendID,-1)
             IFRAME.contentWindow.document.getElementById(outputID).innerHTML = "<p>" +
-                "The inverter model you have entered is not on our list of AS/NZS 4777.1 & 2 compliant inverters.\n Powerco will not accept this application unless the inverter is compliant. A list of such inverters can be found "
+                "The inverter model you have entered is not on our list of AS/NZS 4777.2 compliant inverters.\n Powerco will not accept this application unless the inverter is compliant. A list of such inverters can be found "
                 +"<a href=\"http://www.cleanenergyregulator.gov.au/DocumentAssets/Pages/CEC-approved-inverters.aspx\" target=\"_blank\">here.</a>"+"</p>";
         }
         //if the model was on the list of improved inverters
         else{
-            IFRAME.contentWindow.document.getElementById(backendID).value=2;
-            IFRAME.contentWindow.document.getElementById(backendID).dispatchEvent(new Event('change'));
+            update_backend(backendID,2)
             IFRAME.contentWindow.document.getElementById(outputID).innerHTML = "<p>" +
-                "The inverter model you have entered is on our list of AS/NZS 4777.1 & 2 compliant inverters. " + "</p>";
+                "The inverter model you have entered is on our list of AS/NZS 4777.2 compliant inverters. " + "</p>";
         }
         console.log(Http.responseText)
     }
+}
+
+/**
+ * This function is used to update the fields that let me interact with the form's logic
+ * The event is needed so the form realises it's been changed
+ * @param backendID the id of the field to change
+ * @param value new value for the field
+ */
+function update_backend(backendID, value){
+    IFRAME.contentWindow.document.getElementById(backendID).value=value;
+    IFRAME.contentWindow.document.getElementById(backendID).dispatchEvent(new Event('change'));
 }

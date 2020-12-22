@@ -19,20 +19,21 @@ IFRAME.addEventListener("load", function() {
         + "<div id=\"lookup-output-icp\" data-component = \"text\">" +"</div>";
     let button = IFRAME.contentWindow.document.getElementById("lookup-button-icp");
 
-    //update background field used to hide page break
+    //update background field used to hide page break - the event is needed so the form realises its been changed
     IFRAME.contentWindow.document.getElementById('input_304').value=0;
     IFRAME.contentWindow.document.getElementById('input_304').dispatchEvent(new Event('change'));
 
     /**
      * This function is responsible for sending the ICP number to the python server
      * When it gets a response it updates the HTML and fills in the address fields
+     * Not done as an actual function as that made the even listener act up
      */
     button.addEventListener("click",function (){
         //send request to python server
         let form = new FormData();
         form.append('ICPNum',icp_input.value.trim())
-        Http = new XMLHttpRequest();
-        url = window.location.origin +"/icp"
+        let Http = new XMLHttpRequest();
+        let url = window.location.origin +"/icp"
         Http.open("POST", url, true);
         Http.send(form);
         //wait for response
@@ -43,27 +44,26 @@ IFRAME.addEventListener("load", function() {
                 IFRAME.contentWindow.document.getElementById("lookup-output-icp").innerHTML = "<p>" +
                    "The ICP number you have entered is valid!" +"</p>"
                 let json = JSON.parse(Http.responseText)
+                //fill in address
                 IFRAME.contentWindow.document.getElementById("input_39_addr_line1").value=json.PhysicalAddressNumber +" "+ json.PhysicalAddressStreet
                 IFRAME.contentWindow.document.getElementById("input_39_addr_line2").value=json.PhysicalAddressSuburb
                 IFRAME.contentWindow.document.getElementById("input_39_city").value=json.PhysicalAddressTown
                 IFRAME.contentWindow.document.getElementById("input_39_state").value=json.PhysicalAddressRegion
                 IFRAME.contentWindow.document.getElementById("input_39_postal").value=json.PhysicalAddressPostCode
-                IFRAME.contentWindow.document.getElementById('input_304').value=2;
-                IFRAME.contentWindow.document.getElementById('input_304').dispatchEvent(new Event('change'));
+                update_backend('input_304',2)
            }
            else if(Http.status==0){
                IFRAME.contentWindow.document.getElementById("lookup-output-icp").innerHTML = "<p>" +
                    "We couldn't connect to our server. Please make sure the ICP number is correct before proceeding"
                    +"</p>"
-               IFRAME.contentWindow.document.getElementById('input_304').value=-2;
-                IFRAME.contentWindow.document.getElementById('input_304').dispatchEvent(new Event('change'));
+                update_backend('input_304',-2)
            }
            //if the ICP was invalid
            else{
                IFRAME.contentWindow.document.getElementById("lookup-output-icp").innerHTML = "<p>" +
                    "The ICP number you have entered is invalid. Please check you have entered it correctly." +"</p>"
-                IFRAME.contentWindow.document.getElementById('input_304').value=0;
-                IFRAME.contentWindow.document.getElementById('input_304').dispatchEvent(new Event('change'));
+                //updates field for the conditional logic of the form - the event is needed so the form realises its been changed
+                update_backend('input_304',0)
             }
         }
     });
