@@ -1,9 +1,9 @@
 /**
  * This script looks up the ICP to confirm it is valid
  * It sends a http request to the python server, and updates the HTML to give the user an answer
- * This script must be run AFTER send_request.js as it declares the IFRAME element
+ * This script must be run AFTER inverter_request.js as it declares the IFRAME element
  */
-////the iframe container - not needed as it is declared by send_request.js
+////the iframe container - not needed as it is declared by inverter_request.js
 //let IFRAME = document.getElementById("203407869834061");
 
 /**

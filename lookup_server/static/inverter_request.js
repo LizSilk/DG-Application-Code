@@ -60,14 +60,14 @@ function lookup(inputID,outputID,backendID){
             IFRAME.contentWindow.document.getElementById(backendID).value=2;
             IFRAME.contentWindow.document.getElementById(backendID).dispatchEvent(new Event('change'));
             IFRAME.contentWindow.document.getElementById(outputID).innerHTML = "<p>" +
-                "We could not connect to our servers. Please ensure that the inverter is on the CEC approved list, which can be found "
+                "We could not connect to our servers. Please ensure that the inverter complies with AS/NZS 4777.1 & 2. A list of such inverters can be found "
                 +"<a href=\"http://www.cleanenergyregulator.gov.au/DocumentAssets/Pages/CEC-approved-inverters.aspx\" target=\"_blank\">here.</a>"+"</p>";
         }
         else if(Http.responseText=="0"){
-            IFRAME.contentWindow.document.getElementById(backendID).value=0;
+            IFRAME.contentWindow.document.getElementById(backendID).value=-1;
             IFRAME.contentWindow.document.getElementById(backendID).dispatchEvent(new Event('change'));
             IFRAME.contentWindow.document.getElementById(outputID).innerHTML = "<p>" +
-                "The inverter model you have entered is not on the Clean Energy Council's list of improved inverters.\n Powerco will not accept this application unless the inverter is on this list. It can be found "
+                "The inverter model you have entered is not on our list of AS/NZS 4777.1 & 2 compliant inverters.\n Powerco will not accept this application unless the inverter is compliant. A list of such inverters can be found "
                 +"<a href=\"http://www.cleanenergyregulator.gov.au/DocumentAssets/Pages/CEC-approved-inverters.aspx\" target=\"_blank\">here.</a>"+"</p>";
         }
         //if the model was on the list of improved inverters
@@ -75,8 +75,7 @@ function lookup(inputID,outputID,backendID){
             IFRAME.contentWindow.document.getElementById(backendID).value=2;
             IFRAME.contentWindow.document.getElementById(backendID).dispatchEvent(new Event('change'));
             IFRAME.contentWindow.document.getElementById(outputID).innerHTML = "<p>" +
-                "The inverter model you have entered is on the Clean Energy Council's list of improved inverters. This list can be found "
-                +"<a href=\"http://www.cleanenergyregulator.gov.au/DocumentAssets/Pages/CEC-approved-inverters.aspx\" target=\"_blank\">here.</a>" + "</p>";
+                "The inverter model you have entered is on our list of AS/NZS 4777.1 & 2 compliant inverters. " + "</p>";
         }
         console.log(Http.responseText)
     }

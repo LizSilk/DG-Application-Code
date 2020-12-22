@@ -3,7 +3,7 @@ This script creates a Flask server to look up ICP numbers & inverters
 The ICP numbers come from the Electricity Authority's api
 The inverter data comes from the Clean Energy Council's list of improved inverters
 """
-from flask import Flask, request, render_template, Response, redirect, url_for, make_response
+from flask import Flask, request, render_template, redirect, url_for, make_response
 import requests
 import openpyxl
 import tempfile
@@ -19,8 +19,10 @@ def lookup_inverter():
 
     :return: Sends a reply to the request
     """
+
     if request.method == 'OPTIONS':
         return build_preflight_response()
+
     print(request.values)
     file_request = requests.get(
         "http://www.cleanenergyregulator.gov.au/DocumentAssets/Documents/CEC%20approved%20inverters.xlsx")

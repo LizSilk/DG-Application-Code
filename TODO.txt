@@ -1,5 +1,5 @@
 The javascript currently assumes the url of the server is the same as the url of the website - this will need to be
 changed when this is put in production
 
-send_request.js has to run before as it declares the iframe variable icp_request.js
+inverter_request.js has to run before as it declares the iframe variable icp_request.js
 set the height of the iframe container to avoid the cutting off issue
