@@ -26,7 +26,7 @@ IFRAME.addEventListener("load", function() {
     /**
      * This function is responsible for sending the ICP number to the python server
      * When it gets a response it updates the HTML and fills in the address fields
-     * Not done as an actual function as that made the even listener act up
+     * Implemented in the event listener rather than a discrete function that made the event listener act up
      */
     button.addEventListener("click",function (){
         //send request to python server

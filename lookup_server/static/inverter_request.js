@@ -44,11 +44,11 @@ function makeButton(num, textID, inputID,backendID){
  */
 function lookup(inputID,outputID,backendID){
     //send request to python server
-    let elmnt = IFRAME.contentWindow.document.getElementById(inputID).value;
+    let input = IFRAME.contentWindow.document.getElementById(inputID).value;
     let form = new FormData();
-    form.append('ModelNum',elmnt.trim())
-    Http = new XMLHttpRequest();
-    url = window.location.origin + "/inverter"
+    form.append('ModelNum',input.trim())
+    let Http = new XMLHttpRequest();
+    let url = window.location.origin + "/inverter"
     Http.open("POST", url, true);
     Http.send(form);
     //wait for response

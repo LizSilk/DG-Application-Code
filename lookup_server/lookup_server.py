@@ -21,9 +21,9 @@ def lookup_inverter():
     """
 
     if request.method == 'OPTIONS':
+        print("Preflight request received for inverter lookup")
         return build_preflight_response()
 
-    print(request.values)
     file_request = requests.get(
         "http://www.cleanenergyregulator.gov.au/DocumentAssets/Documents/CEC%20approved%20inverters.xlsx")
 
@@ -40,11 +40,29 @@ def lookup_inverter():
                 # 1 used to mean true
                 response = make_response("1", 200)
                 response.headers.add("Access-Control-Allow-Origin", "*")
+                print('Response returned with code 200 (success)')
                 return response
     output.close()
     # 0 used to mean false
     response = make_response("0", 400)
     response.headers.add("Access-Control-Allow-Origin", "*")
+    print('Response returned with code 400 (failure)')
+    return response
+
+
+def build_preflight_response():
+    """
+        This method is called if the request method is options
+        This is because most browsers use CORS to prevent cross site scripting
+        This means that when a complex http request is sent, the browser sends an inital request to find out the access
+        control settings
+
+        This method puts together a response that tells the browser that yes, this is actually fine
+    """
+    response = make_response("", 400)
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add('Access-Control-Allow-Headers', "*")
+    response.headers.add('Access-Control-Allow-Methods', "*")
     return response
 
 
@@ -59,18 +77,19 @@ def lookup_icp():
     """
 
     if request.method == 'OPTIONS':
+        print("Preflight request received for ICP lookup")
         return build_preflight_response()
 
-    print(request.values)
     icp_request = requests.get("https://emi.azure-api.net/ICPConnectionData/v2/single/?ICP=" + request.form['ICPNum'],
                                headers={'Ocp-Apim-Subscription-Key': 'b995a640a14b469cae8755d23c33256e'})
-    print(icp_request.status_code)
+    print("API request returned with code" + str(icp_request.status_code))
     if icp_request.status_code == 200:
-        print(icp_request.json()[0]["Address"])
+        print("Response sent with value " + str(icp_request.json()[0]["Address"]))
         response = make_response(icp_request.json()[0]["Address"], 200)
         response.headers.add("Access-Control-Allow-Origin", "*")
         return response
     else:
+        print("Lookup failed, response returned with code 400")
         response = make_response("Bad ICP", 400)
         response.headers.add("Access-Control-Allow-Origin", "*")
         return response
@@ -92,11 +111,3 @@ def index():
 
 if __name__ == '__main__':
     app.run()
-
-
-def build_preflight_response():
-    response = make_response("", 400)
-    response.headers.add("Access-Control-Allow-Origin", "*")
-    response.headers.add('Access-Control-Allow-Headers', "*")
-    response.headers.add('Access-Control-Allow-Methods', "*")
-    return response
