@@ -30,8 +30,8 @@ function makeButton(num, textID, inputID,backendID){
     buttonDiv.innerHTML = "<button id=\"lookup-button-"+num+"\" type=\"button\">\n"
         + "Check Inverter Model\n" + "</button>"
         + "<div id=\"lookup-output-"+num+"\" data-component = \"text\">" +"</div>";
-    let button1 = IFRAME.contentWindow.document.getElementById("lookup-button-"+num);
-    button1.addEventListener("click",function(){lookup(inputID,"lookup-output-"+num,backendID)});
+    let button = IFRAME.contentWindow.document.getElementById("lookup-button-"+num);
+    button.addEventListener("click",function(){lookup(inputID,"lookup-output-"+num,backendID)});
     update_backend(backendID,0)
 }
 
