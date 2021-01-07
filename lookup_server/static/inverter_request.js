@@ -57,21 +57,21 @@ function lookup(inputID,outputID,backendID){
         if(Http.status== 0 || Http.status ==408 ){
             update_backend(backendID,2)
             IFRAME.contentWindow.document.getElementById(outputID).innerHTML = "<p>" +
-                "We could not connect to our servers. Please ensure that the inverter complies with AS/NZS 4777.2. A list of such inverters can be found "
+                "We could not connect to our servers. Please ensure that the inverter complies with AS/NZS 4777.2:2020. A list of such inverters can be found "
                 +"<a href=\"http://www.cleanenergyregulator.gov.au/DocumentAssets/Pages/CEC-approved-inverters.aspx\" target=\"_blank\">here.</a>"+"</p>";
         }
         //if there was no response/couldn't connect
         else if(Http.responseText=="0"){
             update_backend(backendID,-1)
             IFRAME.contentWindow.document.getElementById(outputID).innerHTML = "<p>" +
-                "The inverter model you have entered is not on our list of AS/NZS 4777.2 compliant inverters.\n Powerco will not accept this application unless the inverter is compliant. A list of such inverters can be found "
+                "The inverter model you have entered is not on our list of AS/NZS 4777.2:2020 compliant inverters.\n Powerco will not accept this application unless the inverter is compliant. A list of such inverters can be found "
                 +"<a href=\"http://www.cleanenergyregulator.gov.au/DocumentAssets/Pages/CEC-approved-inverters.aspx\" target=\"_blank\">here.</a>"+"</p>";
         }
         //if the model was on the list of improved inverters
         else{
             update_backend(backendID,2)
             IFRAME.contentWindow.document.getElementById(outputID).innerHTML = "<p>" +
-                "The inverter model you have entered is on our list of AS/NZS 4777.2 compliant inverters. " + "</p>";
+                "The inverter model you have entered is on our list of AS/NZS 4777.2:2020 compliant inverters. " + "</p>";
         }
         console.log(Http.responseText)
     }
