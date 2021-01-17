@@ -53,19 +53,19 @@ function lookup(inputID,outputID,backendID){
     Http.send(form);
     //wait for response
     Http.onreadystatechange = (e) => {
-        //if the model was not on the list of improved inverters
-        if(Http.status== 0 || Http.status ==408 ){
+        //if there was no response/couldn't connect
+        if(Http.status== 0 || Http.status ==408  || Http.status == 404){
             update_backend(backendID,2)
             IFRAME.contentWindow.document.getElementById(outputID).innerHTML = "<p>" +
                 "We could not connect to our servers. Please ensure that the inverter complies with AS/NZS 4777.2:2020. A list of such inverters can be found "
-                +"<a href=\"http://www.cleanenergyregulator.gov.au/DocumentAssets/Pages/CEC-approved-inverters.aspx\" target=\"_blank\">here.</a>"+"</p>";
+                +"<u><a href=\"http://www.cleanenergyregulator.gov.au/DocumentAssets/Pages/CEC-approved-inverters.aspx\" target=\"_blank\">here</a></u>"+".</p>";
         }
-        //if there was no response/couldn't connect
+        //if the model was not on the list of improved inverters
         else if(Http.responseText=="0"){
             update_backend(backendID,-1)
             IFRAME.contentWindow.document.getElementById(outputID).innerHTML = "<p>" +
-                "The inverter model you have entered is not on our list of AS/NZS 4777.2:2020 compliant inverters.\n Powerco will not accept this application unless the inverter is compliant. A list of such inverters can be found "
-                +"<a href=\"http://www.cleanenergyregulator.gov.au/DocumentAssets/Pages/CEC-approved-inverters.aspx\" target=\"_blank\">here.</a>"+"</p>";
+                "The inverter model you have entered is not on our list of AS/NZS 4777.2:2020 compliant inverters. \nPlease check you have formatted the name correctly. \nPowerco will not accept this application unless the inverter is compliant. A list of such inverters can be found "
+                +"<u><a href=\"http://www.cleanenergyregulator.gov.au/DocumentAssets/Pages/CEC-approved-inverters.aspx\" target=\"_blank\">here</a></u>"+".</p>";
         }
         //if the model was on the list of improved inverters
         else{

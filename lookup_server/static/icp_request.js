@@ -40,7 +40,7 @@ IFRAME.addEventListener("load", function() {
         Http.onreadystatechange = (e) => {
             console.log(Http.responseText)
             //if the icp was valid
-            if(Http.status != 400 && Http.status!= 0 ){
+            if(Http.status != 400 && Http.status!= 0 && Http.status != 404 ){
                 IFRAME.contentWindow.document.getElementById("lookup-output-icp").innerHTML = "<p>" +
                    "The ICP number you have entered is valid!" +"</p>"
                 let json = JSON.parse(Http.responseText)
@@ -50,9 +50,15 @@ IFRAME.addEventListener("load", function() {
                 IFRAME.contentWindow.document.getElementById("input_39_city").value=json.PhysicalAddressTown
                 IFRAME.contentWindow.document.getElementById("input_39_state").value=json.PhysicalAddressRegion
                 IFRAME.contentWindow.document.getElementById("input_39_postal").value=json.PhysicalAddressPostCode
+                //fill in comparison address
+                IFRAME.contentWindow.document.getElementById("input_531_addr_line1").value=json.PhysicalAddressNumber +" "+ json.PhysicalAddressStreet
+                IFRAME.contentWindow.document.getElementById("input_531_addr_line2").value=json.PhysicalAddressSuburb
+                IFRAME.contentWindow.document.getElementById("input_531_city").value=json.PhysicalAddressTown
+                IFRAME.contentWindow.document.getElementById("input_531_state").value=json.PhysicalAddressRegion
+                IFRAME.contentWindow.document.getElementById("input_531_postal").value=json.PhysicalAddressPostCode
                 update_backend('input_304',2)
            }
-           else if(Http.status==0){
+           else if(Http.status==0 ||Http.status == 404 ){
                IFRAME.contentWindow.document.getElementById("lookup-output-icp").innerHTML = "<p>" +
                    "We couldn't connect to our server. Please make sure the ICP number is correct before proceeding"
                    +"</p>"

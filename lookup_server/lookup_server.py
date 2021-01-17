@@ -2,6 +2,7 @@
 This script creates a Flask server to look up ICP numbers & inverters
 The ICP numbers come from the Electricity Authority's api
 The inverter data comes from the Clean Energy Council's list of improved inverters
+
 """
 from flask import Flask, request, render_template, redirect, url_for, make_response
 import requests
@@ -26,9 +27,15 @@ def lookup_inverter():
         print("Preflight request received for inverter lookup")
         return build_preflight_response()
 
-    # Download list of improved inverters from CEC's website
-    file_request = requests.get(
+    try:
+        # Download list of improved inverters from CEC's website
+        file_request = requests.get(
         "http://www.cleanenergyregulator.gov.au/DocumentAssets/Documents/CEC%20approved%20inverters.xlsx")
+    except:
+        print("Lookup failed, couldn't connect to CEC site")
+        response = make_response("Couldn't connect", 404)
+        response.headers.add("Access-Control-Allow-Origin", "*")
+        return response
 
     # Put the information in a temporary file
     output = tempfile.TemporaryFile()
@@ -91,10 +98,18 @@ def lookup_icp():
         print("Preflight request received for ICP lookup")
         return build_preflight_response()
 
-    # Send request to Electricity Authority ICP API
-    icp_request = requests.get("https://emi.azure-api.net/ICPConnectionData/v2/single/?ICP=" + request.form['ICPNum'],
-                               headers={'Ocp-Apim-Subscription-Key': 'b995a640a14b469cae8755d23c33256e'})
-    print("API request returned with code" + str(icp_request.status_code))
+    try:
+        # Send request to Electricity Authority ICP API
+        icp_request = requests.get(
+            "https://emi.azure-api.net/ICPConnectionData/v2/single/?ICP=" + request.form['ICPNum'],
+            headers={'Ocp-Apim-Subscription-Key': 'b995a640a14b469cae8755d23c33256e'})
+    except:
+        print("Lookup failed, couldn't connect to api")
+        response = make_response("Couldn't connect", 404)
+        response.headers.add("Access-Control-Allow-Origin", "*")
+        return response
+
+    print("API request returned with code " + str(icp_request.status_code))
 
     # If the API returned usable data
     if icp_request.status_code == 200:
@@ -103,6 +118,11 @@ def lookup_icp():
         response.headers.add("Access-Control-Allow-Origin", "*")
         return response
     # If the API did not return usable data
+    elif icp_request.status_code == 429 or icp_request.status_code == 503:
+        print("Lookup failed, couldn't connect to api")
+        response = make_response("Couldn't connect", 404)
+        response.headers.add("Access-Control-Allow-Origin", "*")
+        return response
     else:
         print("Lookup failed, response returned with code 400")
         response = make_response("Bad ICP", 400)
