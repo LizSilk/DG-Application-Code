@@ -1,2 +1,2 @@
-recursive-include yourapplication/templates *
-recursive-include yourapplication/static *
+recursive-include lookup-server/templates *
+recursive-include lookup-server/static *
