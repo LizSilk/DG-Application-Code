@@ -52,20 +52,22 @@ def lookup_inverter():
             cell_name = "{}{}".format(column, row)
             # check if cell name is equal to the model number
             if sheet[cell_name].value == request.form['ModelNum']:
+                manufacturer_name_cell_name = "{}{}".format('A', row)
+                manufacturer_name = sheet[manufacturer_name_cell_name].value
                 date_cell_name = "{}{}".format('F', row)
                 expiry_date = sheet[date_cell_name].value.date()
                 if expiry_date <= date.today():
                     # close the file
                     output.close()
                     # send response - 0 used to mean false
-                    response = make_response("0", 400)
+                    response = make_response("0", 269)
                     response.headers.add("Access-Control-Allow-Origin", "*")
                     print('Response returned with code 400 (failure) - inverter expired')
                     return response
                 # close the file
                 output.close()
                 # send response - 1 used to mean true
-                response = make_response("1", 200)
+                response = make_response(str(manufacturer_name), 200)
                 response.headers.add("Access-Control-Allow-Origin", "*")
                 print('Response returned with code 200 (success)')
                 return response
@@ -123,12 +125,17 @@ def lookup_icp():
     print("API request returned with code " + str(icp_request.status_code))
 
     # If the API returned usable data
-    if icp_request.status_code == 200:
-        print("Response sent with value " + str(icp_request.json()[0]["Address"]))
-        response = make_response(icp_request.json()[0]["Address"], 200)
+    if icp_request.status_code == 200 and icp_request.json()[0]["Network"]["NetworkParticipantID"] == "POCO":
+        response_content = {"Address": icp_request.json()[0]["Address"], "Trader": icp_request.json()[0]["Trader"]["TraderParticipantName"]}
+        response = make_response(response_content, 200)
         response.headers.add("Access-Control-Allow-Origin", "*")
         return response
     # If the API did not return usable data
+    elif icp_request.json()[0]["Network"]["NetworkParticipantID"] != "POCO":
+        print("ICP not on Powerco's Network")
+        response = make_response("ICP not on Powerco's Network", 917)
+        response.headers.add("Access-Control-Allow-Origin", "*")
+        return response
     elif icp_request.status_code == 429 or icp_request.status_code == 503:
         print("Lookup failed, couldn't connect to api")
         response = make_response("Couldn't connect", 404)
@@ -147,7 +154,7 @@ def test_env():
     used to provide a webpage to test on
     :return:
     """
-    return render_template("test-page.html")
+    return render_template("index.html")
 
 
 @app.route('/')
